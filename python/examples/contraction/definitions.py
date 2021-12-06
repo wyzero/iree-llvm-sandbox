@@ -73,7 +73,8 @@ class EinsumProblem(ProblemDefinition):
     """Returns random NumPy suitable for calling the kernel."""
     shapes = self.shapes_builder(sizes)
     tensors = [
-        np.random.rand(*s).astype(t) for s, t in zip(shapes[:-1], types[:-1])
+        # np.random.rand(*s).astype(t) for s, t in zip(shapes[:-1], types[:-1])
+        np.ones(s, dtype=t) for s, t in zip(shapes[:-1], types[:-1])
     ]
     return tensors + [np.zeros(shapes[-1]).astype(types[-1])]
 
@@ -87,6 +88,8 @@ class EinsumProblem(ProblemDefinition):
     """
     output = args[-1]
     reference_output = np.einsum(str(self.specification), *args[:-1])
+    print(args)
+    print(reference_output)
     if not np.allclose(output, reference_output):
       delta = output - reference_output
       max_abs_delta = max(delta.max(), delta.min(), key=abs)
